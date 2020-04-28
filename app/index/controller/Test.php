@@ -2,53 +2,33 @@
 
 namespace app\index\controller;
 
-use app\bridge\controller\Triangle;
 use PHPUnit\Framework\TestCase;
 
 
 class Test extends TestCase
 {
 
+
     public function test()
     {
-        $root = $this->createTreeNode();
-        $res = $this->PrintFromTopToBottom($root);
+      //$sequence = [4,8,6,12,16,14,10];
+      $sequence = [4,6,7,5];
+      $res = $this->VerifySquenceOfBST($sequence);
+      $this->assertEquals(true,$res);
     }
 
 
-    public function createTreeNode()
+    public function recur($sequence,$i,$j)
     {
-        $root = new TreeNode('R');
-        $node1 = new TreeNode('1');
-        $node2 = new TreeNode('2');
-        $node3 = new TreeNode('3');
-        $node4 = new TreeNode('4');
+        if($i >= $j) return true;
+        $p = $i;
+        while($sequence[$p] < $sequence[$j]) $p++;
+        $m = $p;
+        while($sequence[$p] > $sequence[$j]) $p++;
+        return $p == $j && $this->recur($sequence, $i, $m - 1) && $this->recur($sequence, $m, $j - 1);
 
-        $root->left = $node1;
-        $root->right = $node2;
-        $node1->left = $node3;
-        $node2->right = $node4;
-
-        return $root;
     }
 
-    function PrintFromTopToBottom($root)
-    {
-        if (empty($root)) return;
-        $queueNode = new \SplQueue();
-        $res       = [];
-        $queueNode->enqueue($root);  // 先插入第一个节点
 
-        $this->assertNotEmpty($queueNode);
-        while (!$queueNode->isEmpty()) {
-            $head = $queueNode->dequeue();
-            if ($head->left != NULL) $queueNode->enqueue($head->left);
-            if ($head->right != NULL) $queueNode->enqueue($head->right);
-
-            array_push($res,$head->val);
-
-        }
-        return $res;
-    }
 
 }
