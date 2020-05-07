@@ -9,36 +9,56 @@ class Test extends TestCase
 {
     public function test()
     {
-        $pRootOfTree = new TreeNode(7);
-        $node1 = new TreeNode(1);
-        $node2 = new TreeNode(13);
-        $node3 = new TreeNode(11);
-        $node4 = new TreeNode(10);
-        $pRootOfTree->left   = $node1;
-        $pRootOfTree->right   = $node2;
-        $node2->left   = $node3;
-        $node3->left   = $node4;
+        $str = 'bab';
+        $this->Permutation($str);
 
-        $list = $this->Convert($pRootOfTree);
-        print_r($list);
     }
 
-    function Convert($pRootOfTree)
+
+    function Permutation($str)
     {
-        if ($pRootOfTree == NULL) return [];
+        if (empty($str)) return $str;
 
-        $list = new \SplDoublyLinkedList();
+        $arr   = str_split($str);  // 字符串转数组
+        $res   = [];               // 存放最终结果的数组
+        $print = '';               // 存放每次的排序
 
-        $res = $this->recursive($pRootOfTree,$list);
+
+        $this->recursive($arr, $res, $print);
         print_r($res);
+        $this->assertEquals(6, count($res));
 
 
     }
 
-    function recursive($root, &$list)
+
+    public function recursive($arr, &$res, $print)
     {
+        $length = count($arr);  // 数组长度
 
-        $list->push($root);
-        if ($root->left != NULL) $this->recursive($root->left, $list);
+        // 如果递归走到最后一个字符
+        if ($length == 1) {
+            $res[] = $print . $arr[0];
+            return;
+        }
+
+        for ($i = 0; $i < $length; $i++) {
+            // 如果当前字符与首字符重复，则剪枝
+            if ($i != 0 && $arr[$i] == $arr[0]) continue;
+
+            $this->swap($arr[0], $arr[$i]);                                  // 与首字符交换位置
+            $this->recursive(array_slice($arr, 1), $res, $print . $arr[0]);  //
+
+        }
+
     }
+
+    public function swap(&$left, &$right)
+    {
+        $tmp   = $left;
+        $left  = $right;
+        $right = $left;
+    }
+
+
 }
