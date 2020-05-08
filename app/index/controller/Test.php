@@ -9,56 +9,65 @@ class Test extends TestCase
 {
     public function test()
     {
-        $str = 'bab';
-        $this->Permutation($str);
+        //$numbers = [1,2,3,2,4,2,5,2,3];
+        //$numbers = [1,2,3,2,2,2,5,4,2];
+        $numbers = [4, 2, 1, 4, 2];
+        $res     = $this->MoreThanHalfNum_Solution($numbers);
 
+        $this->assertEquals(0, $res);
     }
 
 
-    function Permutation($str)
+    function MoreThanHalfNum_Solution($numbers)
     {
-        if (empty($str)) return $str;
 
-        $arr   = str_split($str);  // 字符串转数组
-        $res   = [];               // 存放最终结果的数组
-        $print = '';               // 存放每次的排序
+        if (empty($numbers)) return;
 
+        $length = count($numbers);
 
-        $this->recursive($arr, $res, $print);
-        print_r($res);
-        $this->assertEquals(6, count($res));
+        $first = $numbers[0]; // 初始值
+        $votes = 1;
 
+        for ($i = 1; $i < $length; $i++) {
 
-    }
+            $numbers[$i] == $first ?  $votes++ :  $votes--;
 
 
-    public function recursive($arr, &$res, $print)
-    {
-        $length = count($arr);  // 数组长度
+            if ($votes == 0) {
 
-        // 如果递归走到最后一个字符
-        if ($length == 1) {
-            $res[] = $print . $arr[0];
-            return;
+                    $first = $numbers[$i + 1];
+                    $i     = $i + 1;
+                    $votes = 1;
+
+                    continue;
+
+            }
         }
 
-        for ($i = 0; $i < $length; $i++) {
-            // 如果当前字符与首字符重复，则剪枝
-            if ($i != 0 && $arr[$i] == $arr[0]) continue;
+        $time = 0;
+        foreach ($numbers as $k) {
+            if ($k == $first) $time++;
+        }
 
-            $this->swap($arr[0], $arr[$i]);                                  // 与首字符交换位置
-            $this->recursive(array_slice($arr, 1), $res, $print . $arr[0]);  //
+        return $time > ($length/2) ? $first : 0;
+
+
+
+
+    }
+
+    public function php_method($numbers)
+    {
+        $length = count($numbers);
+
+        $count = array_count_values($numbers);
+
+        foreach ($count as $k => $v) {
+            if ($v > ($length/2)) return $k;
 
         }
 
+        return 0;
     }
-
-    public function swap(&$left, &$right)
-    {
-        $tmp   = $left;
-        $left  = $right;
-        $right = $left;
-    }
-
 
 }
