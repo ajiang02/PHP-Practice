@@ -9,65 +9,63 @@ class Test extends TestCase
 {
     public function test()
     {
-        //$numbers = [1,2,3,2,4,2,5,2,3];
-        //$numbers = [1,2,3,2,2,2,5,4,2];
-        $numbers = [4, 2, 1, 4, 2];
-        $res     = $this->MoreThanHalfNum_Solution($numbers);
+        $input = [4, 5, 1, 6, 2, 7, 3, 8];
 
-        $this->assertEquals(0, $res);
+       // $res = $this->getLeastNumbers($input, 4);
+        $res = $this->GetLeastNumbers_Solution($input, 4);
+      $this->assertEquals([1,2,3,4],$res);
     }
 
 
-    function MoreThanHalfNum_Solution($numbers)
-    {
+    function getLeastNumbers($arr, $k) {
+        if($k==0) return [];
 
-        if (empty($numbers)) return;
+        $queue=new \SplPriorityQueue();
 
-        $length = count($numbers);
-
-        $first = $numbers[0]; // 初始值
-        $votes = 1;
-
-        for ($i = 1; $i < $length; $i++) {
-
-            $numbers[$i] == $first ?  $votes++ :  $votes--;
-
-
-            if ($votes == 0) {
-
-                    $first = $numbers[$i + 1];
-                    $i     = $i + 1;
-                    $votes = 1;
-
-                    continue;
-
+        foreach($arr as $key=>$val){
+            if($queue->count()<$k){
+                $queue->insert($key,$val);
+            }else if($val<$arr[$queue->top()]){
+                $queue->extract();
+                $queue->insert($key,$val);
             }
         }
 
-        $time = 0;
-        foreach ($numbers as $k) {
-            if ($k == $first) $time++;
+        $ret=[];
+        while(!$queue->isEmpty()){
+            $ret[]=$arr[$queue->extract()];
         }
 
-        return $time > ($length/2) ? $first : 0;
-
-
-
-
+        return $ret;
     }
 
-    public function php_method($numbers)
+
+
+
+    public function GetLeastNumbers_Solution($input,$k)
     {
-        $length = count($numbers);
+        if (count($input) < $k) return [];
 
-        $count = array_count_values($numbers);
+        $queue = new \SplPriorityQueue();
 
-        foreach ($count as $k => $v) {
-            if ($v > ($length/2)) return $k;
+        foreach ($input as $key => $val) {
 
+            if ($queue->count() < $k) {               // 前k个直接插入
+                $queue->insert($key,$val);            // 节点的键为$key，优先值为$val
+            } elseif ($input[$queue->top()] > $val) { // 如果堆顶 > 元素值，则删去堆顶，再添加新节点
+                $queue->extract();
+                $queue->insert($key,$val);
+            }
         }
 
-        return 0;
+        $res = [];
+        while (!$queue->isEmpty()) {
+            $res[] = $input[$queue->extract()];
+        }
+
+        return $res;
     }
+  
+
 
 }
